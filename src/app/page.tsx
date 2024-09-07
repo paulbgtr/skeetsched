@@ -1,5 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { LoginForm } from "@/features/auth/components/login-form";
 
 export default function Home() {
-  return <Button>Hey</Button>;
+  return (
+    <main className="flex items-center justify-center min-h-screen">
+      <LoginForm />
+    </main>
+  );
 }
