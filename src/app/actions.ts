@@ -1,32 +1,33 @@
 "use server";
 
 import jwt from "jsonwebtoken";
-import { z } from "zod";
 
-export const login = (formData: FormData) => {
-  const schema = z.object({
-    identifier: z.string().trim(),
-    password: z.string().trim(),
-  });
+export const login = (
+  previousState: string | undefined | null,
+  formData: FormData
+) => {
+  const identifier = formData.get("identifier");
+  const password = formData.get("password");
 
-  const userParse = schema.safeParse({
-    identifier: formData.get("identifier"),
-    password: formData.get("password"),
-  });
-
-  if (!userParse.success) {
-    return {
-      error: "Invalid credentials",
-    };
+  if (!identifier || !password) {
+    return "Invalid credentials";
   }
 
-  const data = userParse.data;
+  const user = {
+    identifier: identifier.toString().trim(),
+    password: password.toString().trim(),
+  };
 
-  try {
-    const token = jwt.sign(data, "secret");
-    return { token };
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
+  const token = jwt.sign(user, "secret");
+  return token;
+};
+
+export const me = (token: string) => {
+  const decoded = jwt.verify(token, "secret");
+  const { identifier, password } = decoded as {
+    identifier: string;
+    password: string;
+  };
+
+  return { identifier: identifier.trim(), password: password.trim() };
 };
