@@ -39,6 +39,7 @@ export const authOptions = {
       },
     }),
   ],
+  secret: "secret",
   pages: {
     signIn: "/login",
   },
