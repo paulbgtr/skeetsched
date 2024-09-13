@@ -1,6 +1,8 @@
+"use server";
+
 import { eq } from "drizzle-orm";
-import db from "..";
-import { scheduledSkeets } from "../schema";
+import db from "@/db";
+import { scheduledSkeets } from "@/db/schema";
 
 export const getScheduledSkeets = async () => {
   try {
