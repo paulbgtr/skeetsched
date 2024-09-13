@@ -1,4 +1,7 @@
-import { getScheduledSkeetByUserHandle } from "@/app/actions/skeets/scheduledSkeets";
+import {
+  getScheduledSkeetByUserHandle,
+  deleteScheduledSkeet,
+} from "@/app/actions/skeets/scheduledSkeets";
 import { getSession } from "@/lib/auth/session";
 import { createAgent } from "@/lib/bsky/agent";
 
@@ -31,6 +34,7 @@ export async function GET(req: Request, res: Response) {
     await agent.post({
       text: skeet.content!,
     });
+    await deleteScheduledSkeet(skeet.id);
   }
 
   return new Response("Posted skeets");
