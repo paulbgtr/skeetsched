@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { agent } from "../bsky/agent";
+import { createAgent } from "../bsky/agent";
 
 export const authOptions = {
   providers: [
@@ -22,18 +22,18 @@ export const authOptions = {
           return null;
         }
 
+        const agent = createAgent();
+
         const result = await agent.login({
           identifier: credentials.handle,
           password: credentials.password,
         });
 
         if (result.success && agent.session) {
-          return {
-            id: agent.session?.did,
-            name: agent.session?.handle,
-            email: agent.session?.email,
-            bskySession: agent.session,
+          const user = {
+            email: agent.session,
           };
+          return user;
         }
         return null;
       },
