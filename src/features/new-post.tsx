@@ -8,11 +8,14 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
   const { agent } = useAgent();
 
   const [content, setContent] = useState(postContent || "");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    schedule: false,
+    post: false,
+  });
 
   const handlePost = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading({ ...isLoading, post: true });
 
       await agent?.post({
         text: content,
@@ -21,13 +24,13 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
       console.log(err); // todo: handle
     } finally {
       setContent(""); // todo: add a notification that post was sent
-      setIsLoading(false);
+      setIsLoading({ ...isLoading, post: false });
     }
   };
 
   const handleSchedule = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading({ ...isLoading, schedule: true });
 
       await createScheduledSkeet({
         userHandle: "paulbg.dev",
@@ -38,11 +41,11 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
       console.log(err); // todo: handle
     } finally {
       setContent(""); // todo: add a notification that post was sent
-      setIsLoading(false);
+      setIsLoading({ ...isLoading, schedule: false });
     }
   };
 
-  const isDisabled = content.length === 0 || content.length > 300 || isLoading;
+  const isDisabled = content.length === 0 || content.length > 300;
 
   return (
     <div className="w-full max-w-2xl">
@@ -64,10 +67,10 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
         <div className="flex gap-2">
           <Button
             onClick={handleSchedule}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading.schedule}
             className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isLoading.schedule ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
                 <span>Scheduling...</span>
@@ -78,10 +81,10 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
           </Button>
           <Button
             onClick={handlePost}
-            disabled={isDisabled}
+            disabled={isDisabled || isLoading.post}
             className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
           >
-            {isLoading ? (
+            {isLoading.post ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
                 <span>Posting...</span>
