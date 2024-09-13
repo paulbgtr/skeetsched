@@ -1,22 +1,51 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
+import { useSession, signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { login } from "@/app/actions";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const [handle, setHandle] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (session) {
+      router.push("/post");
+    }
+  }, [session, router]);
+
+  const onsubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const result = await signIn("bsky", {
+      handle,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      return console.log(result?.error);
+    }
+    router.push("/post");
+  };
+
   return (
     <div className="rounded-xl shadow-md p-8 w-96">
       <h2 className="text-3xl font-black text-center mb-6">
         Sign in to your Bluesky account
       </h2>
-      <form action={login}>
+      <form onSubmit={onsubmit}>
         <div className="mb-4">
           <Input
-            id="identifier"
             type="text"
-            name="identifier"
+            value={handle}
+            onChange={(e) => setHandle(e.target.value)}
             required
             className="rounded-xl border-gray-300 text-gray-600"
             placeholder="Email"
@@ -24,9 +53,9 @@ export const LoginForm = () => {
         </div>
         <div className="mb-4">
           <Input
-            id="password"
             type="password"
-            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="rounded-xl border-gray-300 text-gray-600"
             placeholder="Password"
