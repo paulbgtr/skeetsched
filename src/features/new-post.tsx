@@ -1,13 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAgent from "@/hooks/useAgent";
 import { createScheduledSkeet } from "@/app/actions/skeets/scheduledSkeets";
 import LoadingSpinner from "@/components/loading-spinner";
+import { updateDrafts } from "@/app/actions/skeets/drafts";
 
-export const NewPost = ({ postContent }: { postContent?: string }) => {
+export const NewPost = ({
+  draftId,
+  draftContent,
+}: {
+  draftId?: string;
+  draftContent?: string;
+}) => {
   const { agent } = useAgent();
 
-  const [content, setContent] = useState(postContent || "");
+  const [content, setContent] = useState(draftContent || "");
   const [isLoading, setIsLoading] = useState({
     schedule: false,
     post: false,
@@ -44,6 +51,14 @@ export const NewPost = ({ postContent }: { postContent?: string }) => {
       setIsLoading({ ...isLoading, schedule: false });
     }
   };
+
+  useEffect(() => {
+    console.log(content);
+
+    updateDrafts(draftId, {
+      content,
+    });
+  }, [content]);
 
   const isDisabled = content.length === 0 || content.length > 300;
 
