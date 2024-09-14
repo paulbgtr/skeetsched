@@ -7,6 +7,9 @@ import { deleteDrafts, updateDrafts } from "@/app/actions/skeets/drafts";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../lib/react-query/client";
 import debounce from "lodash.debounce";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { useRouter } from "next/navigation";
 
 export const NewPost = ({
   draftId,
@@ -15,7 +18,9 @@ export const NewPost = ({
   draftId?: string;
   draftContent?: string;
 }) => {
+  const { toast } = useToast();
   const { agent } = useAgent();
+  const router = useRouter();
 
   const [content, setContent] = useState(draftContent || "");
 
@@ -47,27 +52,29 @@ export const NewPost = ({
     debouncedSaveDraft(e.target.value);
   };
 
-  const clearContent = () => {
-    setContent("");
-  };
-
   const { mutate: deleteDraft } = useMutation({
     mutationFn: deleteDrafts,
     onSuccess: () => cleanUp(),
   });
 
   const cleanUp = () => {
-    clearContent();
     queryClient.invalidateQueries({ queryKey: ["drafts"] });
     if (draftId) {
       deleteDraft(draftId);
     }
+    router.push("/dashboard/post");
   };
 
   const { mutate: schedulePost, isPending: isPendingSchedulePost } =
     useMutation({
       mutationFn: createScheduledSkeet,
-      onSuccess: () => cleanUp(),
+      onSuccess: () => {
+        toast({
+          title: "Skeet scheduled",
+          description: `Your skeet will be published at the specified time`, // todo: would be better to show the time
+        });
+        cleanUp();
+      },
     });
 
   const handleSchedulePost = async () => {
@@ -86,7 +93,14 @@ export const NewPost = ({
         text: content,
       });
     },
-    onSuccess: () => cleanUp(),
+    onSuccess: () => {
+      toast({
+        title: "Skeet posted",
+        description: "Your skeet has been posted",
+      });
+
+      cleanUp();
+    },
   });
 
   const isDisabled = content.length === 0 || content.length > 300;
@@ -137,6 +151,7 @@ export const NewPost = ({
               "Post"
             )}
           </Button>
+          <Toaster />
         </div>
       </div>
     </div>
