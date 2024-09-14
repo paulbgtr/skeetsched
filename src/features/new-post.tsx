@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import useAgent from "@/hooks/useAgent";
 import { createScheduledSkeet } from "@/app/actions/skeets/scheduledSkeets";
 import LoadingSpinner from "@/components/loading-spinner";
-import { updateDrafts } from "@/app/actions/skeets/drafts";
+import { deleteDrafts, updateDrafts } from "@/app/actions/skeets/drafts";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "../lib/react-query/client";
+import debounce from "lodash.debounce";
 
 export const NewPost = ({
   draftId,
@@ -15,50 +18,76 @@ export const NewPost = ({
   const { agent } = useAgent();
 
   const [content, setContent] = useState(draftContent || "");
-  const [isLoading, setIsLoading] = useState({
-    schedule: false,
-    post: false,
+
+  const updateDraftContent = async (content: string) => {
+    if (!draftId) {
+      return;
+    }
+
+    await updateDrafts(draftId, { content });
+    queryClient.invalidateQueries({ queryKey: ["drafts"] });
+  };
+
+  const { mutate: updateDraft } = useMutation({
+    mutationFn: updateDraftContent,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["drafts"] }),
   });
 
-  const handlePost = async () => {
-    try {
-      setIsLoading({ ...isLoading, post: true });
+  const debouncedSaveDraft = useMemo(
+    () =>
+      debounce((value) => {
+        updateDraft(value);
+      }, 500),
+    [updateDraft]
+  );
 
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+
+    debouncedSaveDraft(e.target.value);
+  };
+
+  const clearContent = () => {
+    setContent("");
+  };
+
+  const { mutate: deleteDraft } = useMutation({
+    mutationFn: deleteDrafts,
+    onSuccess: () => cleanUp(),
+  });
+
+  const cleanUp = () => {
+    clearContent();
+    queryClient.invalidateQueries({ queryKey: ["drafts"] });
+    if (draftId) {
+      deleteDraft(draftId);
+    }
+  };
+
+  const { mutate: schedulePost, isPending: isPendingSchedulePost } =
+    useMutation({
+      mutationFn: createScheduledSkeet,
+      onSuccess: () => cleanUp(),
+    });
+
+  const handleSchedulePost = async () => {
+    const handle = agent.sessionManager.session.handle;
+
+    try {
+      await schedulePost({ userHandle: handle, content, postAt: new Date() });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const { mutate: addPost, isPending: isPendingAddPost } = useMutation({
+    mutationFn: async () => {
       await agent?.post({
         text: content,
       });
-    } catch (err) {
-      console.log(err); // todo: handle
-    } finally {
-      setContent(""); // todo: add a notification that post was sent
-      setIsLoading({ ...isLoading, post: false });
-    }
-  };
-
-  const handleSchedule = async () => {
-    try {
-      setIsLoading({ ...isLoading, schedule: true });
-
-      await createScheduledSkeet({
-        userHandle: "paulbg.dev",
-        content,
-        postAt: new Date(),
-      });
-    } catch (err) {
-      console.log(err); // todo: handle
-    } finally {
-      setContent(""); // todo: add a notification that post was sent
-      setIsLoading({ ...isLoading, schedule: false });
-    }
-  };
-
-  useEffect(() => {
-    console.log(content);
-
-    updateDrafts(draftId, {
-      content,
-    });
-  }, [content]);
+    },
+    onSuccess: () => cleanUp(),
+  });
 
   const isDisabled = content.length === 0 || content.length > 300;
 
@@ -66,7 +95,7 @@ export const NewPost = ({
     <div className="w-full max-w-2xl">
       <h1 className="text-xl font-bold mb-4">Compose a Skeet</h1>
       <textarea
-        onChange={(e) => setContent(e.target.value)}
+        onChange={handleContentChange}
         value={content}
         className="w-full border-2 border-gray-100 p-3 rounded-xl resize-none h-full focus:outline-none"
         placeholder="What's up?"
@@ -81,11 +110,11 @@ export const NewPost = ({
         </span>
         <div className="flex gap-2">
           <Button
-            onClick={handleSchedule}
-            disabled={isDisabled || isLoading.schedule}
+            onClick={handleSchedulePost}
+            disabled={isDisabled || isPendingSchedulePost}
             className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading.schedule ? (
+            {isPendingSchedulePost ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
                 <span>Scheduling...</span>
@@ -95,11 +124,11 @@ export const NewPost = ({
             )}
           </Button>
           <Button
-            onClick={handlePost}
-            disabled={isDisabled || isLoading.post}
+            onClick={() => addPost()}
+            disabled={isDisabled || isPendingAddPost}
             className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
           >
-            {isLoading.post ? (
+            {isPendingAddPost ? (
               <>
                 <LoadingSpinner size="sm" className="mr-2" />
                 <span>Posting...</span>
