@@ -34,7 +34,9 @@ const FormSchema = z.object({
   postDate: z.date({
     required_error: "A date of post is required.",
   }),
-  postTime: z.string(),
+  postTime: z.string({
+    required_error: "A time of post is required.",
+  }),
 });
 
 export const SchedulePost = ({
@@ -44,20 +46,27 @@ export const SchedulePost = ({
 }: {
   isDisabled: boolean;
   isPendingSchedulePost: boolean;
-  handleSchedulePost: () => void;
+  handleSchedulePost: (postAt: Date) => void;
 }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-    // handleSchedulePost();
+    const date = new Date(data.postDate);
+    const [hours, minutes] = data.postTime.split(":").map(Number);
+
+    date.setUTCHours(hours);
+    date.setUTCMinutes(minutes);
+    date.setUTCSeconds(0);
+    date.setUTCMilliseconds(0);
+
+    handleSchedulePost(date);
   }
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button
           disabled={isDisabled}
           className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -101,13 +110,31 @@ export const SchedulePost = ({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
+                            disabled={(date) => date < new Date()}
                             initialFocus
                           />
                         </PopoverContent>
                       </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  </>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="postTime"
+                render={({ field }) => (
+                  <>
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Time</FormLabel>
+                      <FormControl>
+                        <input
+                          value={field.value}
+                          onChange={field.onChange}
+                          className="text-sm w-[8rem] border-[1px] rounded-md py-[0.4rem] px-3"
+                          type="time"
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   </>
