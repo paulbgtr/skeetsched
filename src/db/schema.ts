@@ -20,3 +20,12 @@ export const drafts = pgTable("drafts", {
     withTimezone: true,
   }).defaultNow(),
 });
+
+export const sessions = pgTable("sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  handle: text("handle").notNull().unique(),
+  session: text("session").notNull().unique(),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+  }),
+});
