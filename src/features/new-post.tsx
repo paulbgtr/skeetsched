@@ -81,11 +81,11 @@ export const NewPost = ({
       },
     });
 
-  const handleSchedulePost = async () => {
+  const handleSchedulePost = async (postAt: Date) => {
     const handle = agent.sessionManager.session.handle;
 
     try {
-      await schedulePost({ userHandle: handle, content, postAt: new Date() });
+      await schedulePost({ userHandle: handle, content, postAt });
     } catch (err) {
       console.error(err);
     }
