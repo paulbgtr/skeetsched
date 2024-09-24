@@ -1,41 +1,45 @@
 import {
-  getScheduledSkeetByUserHandle,
+  getScheduledSkeets,
   deleteScheduledSkeet,
 } from "@/app/actions/skeets/scheduledSkeets";
-import { getSession } from "@/lib/auth/session";
+import { getSessionByHandle } from "../../actions/skeets/sessions";
 import { createAgent } from "@/lib/bsky/agent";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request, res: Response) {
-  const session = await getSession();
+export async function GET() {
+  try {
+    const allSkeets = await getScheduledSkeets();
+    const now = new Date();
 
-  const bskySession = session?.user?.email;
-  const skeets = await getScheduledSkeetByUserHandle(bskySession?.handle);
+    const skeets = allSkeets.filter((skeet) => skeet.postAt <= now); // todo: fix any err
 
-  if (skeets.length === 0) {
-    return new Response("No skeets to post");
+    if (skeets.length === 0) {
+      return new Response("No skeets to post");
+    }
+
+    const agent = createAgent();
+
+    try {
+      for (const skeet of skeets) {
+        const [session] = await getSessionByHandle(skeet.userHandle);
+        const bskySession = JSON.parse(session?.session);
+
+        agent.sessionManager.session = bskySession;
+
+        await agent.post({
+          text: skeet.content,
+        });
+        await deleteScheduledSkeet(skeet.id!);
+      }
+    } catch (err) {
+      console.error(err);
+      return new Response("Error posting skeets");
+    }
+
+    return new Response("Posted skeets");
+  } catch (err) {
+    console.log(err);
+    return new Response("Error posting skeets");
   }
-
-  const now = new Date();
-
-  const shouldBePosted = skeets.filter((skeet) => {
-    return skeet.postAt!.getTime() <= now.getTime();
-  });
-
-  if (shouldBePosted.length === 0) {
-    return new Response("No skeets to post");
-  }
-
-  const agent = createAgent();
-  agent.sessionManager.session = session?.user?.email;
-
-  for (const skeet of shouldBePosted) {
-    await agent.post({
-      text: skeet.content!,
-    });
-    await deleteScheduledSkeet(skeet.id);
-  }
-
-  return new Response("Posted skeets");
 }
