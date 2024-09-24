@@ -6,6 +6,7 @@ import { useSession, signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createSession } from "@/app/actions/skeets/sessions";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -14,11 +15,11 @@ export const LoginForm = () => {
   const [handle, setHandle] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    if (session) {
-      router.push("/post");
-    }
-  }, [session, router]);
+  //   useEffect(() => {
+  //     if (session) {
+  //       router.push("/post");
+  //     }
+  //   }, [session, router]);
 
   const onsubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,7 +33,11 @@ export const LoginForm = () => {
     if (result?.error) {
       return console.log(result?.error);
     }
-    router.push("/post");
+    await createSession({
+      handle,
+      session: JSON.stringify(session?.user?.email),
+    });
+    router.push("/dashboard/post");
   };
 
   return (
