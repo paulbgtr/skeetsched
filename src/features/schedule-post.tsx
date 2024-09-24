@@ -110,7 +110,6 @@ export const SchedulePost = ({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={(date) => date < new Date()}
                             initialFocus
                           />
                         </PopoverContent>
@@ -148,7 +147,7 @@ export const SchedulePost = ({
                 {isPendingSchedulePost ? (
                   <>
                     <LoadingSpinner size="sm" className="mr-2" />
-                    <span>Posting...</span>
+                    <span>Scheduling...</span>
                   </>
                 ) : (
                   "Schedule"
