@@ -60,6 +60,7 @@ export const SchedulePost = ({
     date.setUTCMinutes(minutes);
     date.setUTCSeconds(0);
     date.setUTCMilliseconds(0);
+    date.setDate(date.getDate() + 1); // the form selects one day before the intended day for some reason
 
     handleSchedulePost(date);
   }
