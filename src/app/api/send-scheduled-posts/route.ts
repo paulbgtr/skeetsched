@@ -12,7 +12,10 @@ export async function GET() {
     const allSkeets = await getScheduledSkeets();
     const now = new Date();
 
-    const skeets = allSkeets.filter((skeet) => skeet.postAt <= now); // todo: fix any err
+    const skeets = allSkeets.filter((skeet) => {
+      if (!skeet.postAt) return;
+      return skeet.postAt <= now;
+    });
 
     if (skeets.length === 0) {
       return new Response("No skeets to post");
