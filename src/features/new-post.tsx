@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import useAgent from "@/hooks/useAgent";
 import { createScheduledSkeet } from "@/app/actions/skeets/scheduledSkeets";
 import LoadingSpinner from "@/components/loading-spinner";
@@ -11,7 +11,6 @@ import { queryClient } from "../lib/react-query/client";
 import debounce from "lodash.debounce";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
-import { useRouter } from "next/navigation";
 import { SchedulePost } from "./schedule-post";
 
 export const NewPost = ({
@@ -23,10 +22,8 @@ export const NewPost = ({
 }) => {
   const { toast } = useToast();
   const { agent } = useAgent();
-  const router = useRouter();
 
   const [content, setContent] = useState(draftContent || "");
-  const [date, setDate] = useState<Date | undefined>(new Date());
 
   const updateDraftContent = async (content: string) => {
     if (!draftId) {
@@ -91,10 +88,6 @@ export const NewPost = ({
     }
   };
 
-  useEffect(() => {
-    console.log(date);
-  }, [date]);
-
   const { mutate: addPost, isPending: isPendingAddPost } = useMutation({
     mutationFn: async () => {
       await agent?.post({
@@ -113,8 +106,6 @@ export const NewPost = ({
 
   const isDisabled = content.length === 0 || content.length > 300;
   const isContentTooLong = content.length > 300;
-
-  // todo: close dialog when post is scheduled completely
 
   return (
     <div className="w-full max-w-2xl">

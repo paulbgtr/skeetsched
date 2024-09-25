@@ -5,13 +5,18 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const useAgent = () => {
-  const [agent, setAgent] = useState<Agent>(createAgent());
+  const [agent] = useState<Agent>(createAgent());
 
   const { data: session, status } = useSession();
+  //     {
+  //     required: true,
+  //     onUnauthenticated() {
+  //       router.push("/");
+  //     },
+  //   }
   const router = useRouter();
 
   useEffect(() => {
-    console.log(session);
     if (status === "loading") {
       return;
     }
