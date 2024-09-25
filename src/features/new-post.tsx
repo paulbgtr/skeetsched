@@ -79,7 +79,7 @@ export const NewPost = ({
     });
 
   const handleSchedulePost = async (postAt: Date) => {
-    // @ts-ignore
+    // @ts-expect-error returns the handle correctly
     const handle = agent.sessionManager.session.handle;
 
     try {
