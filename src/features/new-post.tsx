@@ -79,6 +79,7 @@ export const NewPost = ({
     });
 
   const handleSchedulePost = async (postAt: Date) => {
+    // @ts-ignore
     const handle = agent.sessionManager.session.handle;
 
     try {
