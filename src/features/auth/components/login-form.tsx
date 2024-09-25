@@ -15,11 +15,11 @@ export const LoginForm = () => {
   const [handle, setHandle] = useState("");
   const [password, setPassword] = useState("");
 
-  //   useEffect(() => {
-  //     if (session) {
-  //       router.push("/post");
-  //     }
-  //   }, [session, router]);
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard/post");
+    }
+  }, [session, router]);
 
   const onsubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
