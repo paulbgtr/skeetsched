@@ -12,37 +12,61 @@ export async function GET() {
     const allSkeets = await getScheduledSkeets();
     const now = new Date();
 
-    const skeets = allSkeets.filter((skeet) => {
-      if (!skeet.postAt) return;
-      return skeet.postAt <= now;
+    const skeetsToPost = allSkeets.filter((skeet) => {
+      if (!skeet.postAt) return false;
+
+      const postAtDate = new Date(skeet.postAt);
+
+      const isReady =
+        Math.floor(postAtDate.getTime() / 1000) <=
+        Math.floor(now.getTime() / 1000);
+
+      console.log(
+        `Skeet ID: ${skeet.id}, Content: ${skeet.content.substring(
+          0,
+          20
+        )}..., PostAt: ${postAtDate.toISOString()}, Is Ready: ${isReady}`
+      );
+
+      return isReady;
     });
 
-    if (skeets.length === 0) {
+    if (skeetsToPost.length === 0) {
+      console.log("No skeets to post");
       return new Response("No skeets to post");
     }
 
+    console.log(`Found ${skeetsToPost.length} skeets to post`);
+
     const agent = createAgent();
 
-    try {
-      for (const skeet of skeets) {
+    for (const skeet of skeetsToPost) {
+      try {
         const [session] = await getSessionByHandle(skeet.userHandle);
         const bskySession = JSON.parse(session?.session);
-
         agent.sessionManager.session = bskySession;
+
+        console.log(
+          `Posting skeet ID: ${skeet.id}, Content: ${skeet.content.substring(
+            0,
+            20
+          )}...`
+        );
 
         await agent.post({
           text: skeet.content,
         });
+
         await deleteScheduledSkeet(skeet.id!);
+        console.log(`Successfully posted and deleted skeet ID: ${skeet.id}`);
+      } catch (err) {
+        console.error(`Error posting skeet ID: ${skeet.id}`, err);
       }
-    } catch (err) {
-      console.error(err);
-      return new Response("Error posting skeets");
     }
 
-    return new Response("Posted skeets");
+    return new Response(`Posted ${skeetsToPost.length} skeets`);
   } catch (err) {
-    console.log(err);
+    console.error("Error in GET function:", err);
     return new Response("Error posting skeets");
   }
 }
