@@ -56,13 +56,11 @@ export const SchedulePost = ({
     const date = new Date(data.postDate);
     const [hours, minutes] = data.postTime.split(":").map(Number);
 
-    date.setUTCHours(hours);
-    date.setUTCMinutes(minutes);
-    date.setUTCSeconds(0);
-    date.setUTCMilliseconds(0);
-    date.setDate(date.getDate() + 1); // the form selects one day before the intended day for some reason
+    date.setHours(hours, minutes, 0, 0);
 
-    handleSchedulePost(date);
+    const utcDate = new Date(date.toUTCString());
+
+    handleSchedulePost(utcDate);
   }
 
   return (
