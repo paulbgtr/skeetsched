@@ -1,37 +1,44 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useAgent from "@/hooks/useAgent";
 import { createScheduledSkeet } from "@/app/actions/skeets/scheduledSkeets";
 import LoadingSpinner from "@/components/loading-spinner";
 import { deleteDrafts, updateDrafts } from "@/app/actions/skeets/drafts";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "../lib/react-query/client";
 import debounce from "lodash.debounce";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { SchedulePost } from "./schedule-post";
 import { formatDateForNotification } from "@/lib/utils";
+import { useCurrentDraftContext } from "@/context/current-draft-context";
+import { getDraftById } from "@/app/actions/skeets/drafts";
 
-export const NewPost = ({
-  draftId,
-  draftContent,
-}: {
-  draftId?: string;
-  draftContent?: string;
-}) => {
+export const NewPost = () => {
   const { toast } = useToast();
   const { agent } = useAgent();
+  const { currentDraftId } = useCurrentDraftContext();
 
-  const [content, setContent] = useState(draftContent || "");
+  const [content, setContent] = useState("");
+
+  const { data: draft } = useQuery({
+    queryKey: ["draft", currentDraftId],
+    queryFn: () => getDraftById(currentDraftId), // todo: fix err
+    enabled: !!currentDraftId,
+  });
+
+  useEffect(() => {
+    if (draft) setContent(draft[0]?.content || "");
+  }, [currentDraftId, draft]);
 
   const updateDraftContent = async (content: string) => {
-    if (!draftId) {
+    if (!currentDraftId) {
       return;
     }
 
-    await updateDrafts(draftId, { content });
+    await updateDrafts(currentDraftId, { content });
     queryClient.invalidateQueries({ queryKey: ["drafts"] });
   };
 
@@ -61,8 +68,8 @@ export const NewPost = ({
 
   const cleanUp = () => {
     queryClient.invalidateQueries({ queryKey: ["drafts"] });
-    if (draftId) {
-      deleteDraft(draftId);
+    if (currentDraftId) {
+      deleteDraft(currentDraftId);
     }
     setContent("");
   };
