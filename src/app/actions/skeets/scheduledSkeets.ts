@@ -29,7 +29,7 @@ export const createScheduledSkeet = async (data: {
   postAt: Date;
 }) => {
   try {
-    return await db.insert(scheduledSkeets).values(data);
+    return await db.insert(scheduledSkeets).values(data).returning();
   } catch (err) {
     throw err;
   }
