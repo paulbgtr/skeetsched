@@ -1,11 +1,11 @@
 FROM oven/bun:alpine
-
 WORKDIR /app
-
 COPY package.json bun.lockb ./
 
 RUN bun install
 
 COPY . .
 
-CMD ["bun", "dev"]
+RUN bun run build
+
+CMD ["bun", "run", "start"]
