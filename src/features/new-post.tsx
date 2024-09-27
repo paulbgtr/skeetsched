@@ -12,6 +12,7 @@ import debounce from "lodash.debounce";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { SchedulePost } from "./schedule-post";
+import { formatDateForNotification } from "@/lib/utils";
 
 export const NewPost = ({
   draftId,
@@ -69,10 +70,16 @@ export const NewPost = ({
   const { mutate: schedulePost, isPending: isPendingSchedulePost } =
     useMutation({
       mutationFn: createScheduledSkeet,
-      onSuccess: () => {
+      onSuccess: ([data]) => {
+        const { postAt } = data;
+
+        if (!postAt) {
+          return;
+        }
+
         toast({
           title: "Skeet scheduled",
-          description: `Your skeet will be published at the specified time`, // todo: would be better to show the time
+          description: formatDateForNotification(postAt),
         });
         cleanUp();
       },
@@ -83,7 +90,7 @@ export const NewPost = ({
     const handle = agent.sessionManager.session.handle;
 
     try {
-      await schedulePost({ userHandle: handle, content, postAt });
+      schedulePost({ userHandle: handle, content, postAt });
     } catch (err) {
       console.error(err);
     }
