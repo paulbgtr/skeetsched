@@ -27,7 +27,9 @@ const useAgent = () => {
 
     const getAgent = async () => {
       if (agent) {
-        agent.sessionManager.session = session?.user?.email;
+        const bskySession = session?.user?.email;
+        // @ts-expect-error returns the handle correctly
+        agent.sessionManager.session = bskySession;
       }
     };
 

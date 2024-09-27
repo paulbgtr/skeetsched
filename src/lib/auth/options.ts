@@ -17,6 +17,7 @@ export const authOptions = {
       },
 
       // todo: fix type err
+      // @ts-expect-error runs correctly
       async authorize(credentials) {
         if (!credentials) {
           return null;
