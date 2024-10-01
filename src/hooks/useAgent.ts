@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
-import { Agent } from "@atproto/api";
 import { createAgent } from "@/lib/bsky/agent";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { AtpAgent, AtpSessionData } from "@atproto/api";
 
 const useAgent = () => {
-  const [agent] = useState<Agent>(createAgent());
+  const [agent] = useState<AtpAgent>(createAgent());
 
   const { data: session, status } = useSession();
-  //     {
-  //     required: true,
-  //     onUnauthenticated() {
-  //       router.push("/");
-  //     },
-  //   }
   const router = useRouter();
 
   useEffect(() => {
@@ -21,15 +15,20 @@ const useAgent = () => {
       return;
     }
 
-    // if (!session?.user) {
-    //   router.push("/");
-    // }
+    if (!session?.user) {
+      router.push("/");
+    }
 
     const getAgent = async () => {
-      if (agent) {
-        const bskySession = session?.user?.email;
-        // @ts-expect-error returns the handle correctly
-        agent.sessionManager.session = bskySession;
+      if (agent && session) {
+        const atpSession: AtpSessionData = {
+          refreshJwt: session?.refreshJwt,
+          accessJwt: session?.accessJwt,
+          handle: session?.user?.handle,
+          did: session?.user?.id,
+          active: true,
+        };
+        agent.sessionManager.session = atpSession;
       }
     };
 
