@@ -1,6 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import { AtpSessionData } from "@atproto/api";
 import db from "@/db";
 import { sessions } from "@/db/schema";
 
@@ -12,12 +13,20 @@ export const getSessionByHandle = (handle: string) => {
   }
 };
 
-export const createSession = async (data: {
-  handle: string;
-  session: string;
-}) => {
+export const createSession = async (data: AtpSessionData) => {
   try {
     return await db.insert(sessions).values(data).returning();
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const updateSessionByHandle = async (data: AtpSessionData) => {
+  try {
+    return await db
+      .update(sessions)
+      .set(data)
+      .where(eq(sessions.handle, data.handle));
   } catch (err) {
     throw err;
   }
