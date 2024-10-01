@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { useState, useMemo, useEffect } from "react";
 import useAgent from "@/hooks/useAgent";
@@ -93,7 +94,10 @@ export const NewPost = () => {
     });
 
   const handleSchedulePost = async (postAt: Date) => {
-    // @ts-expect-error returns the handle correctly
+    if (!agent?.sessionManager?.session) {
+      return;
+    }
+
     const handle = agent.sessionManager.session.handle;
 
     try {
@@ -124,14 +128,14 @@ export const NewPost = () => {
 
   return (
     <div className="w-full max-w-2xl">
-      <h1 className="text-xl font-bold mb-4">Compose a Skeet</h1>
+      <h1 className="mb-4 text-xl font-bold">Compose a Skeet</h1>
       <textarea
         onChange={handleContentChange}
         value={content}
-        className="w-full border-2 border-gray-100 p-3 rounded-xl resize-none h-full focus:outline-none"
+        className="w-full h-full p-3 border-2 border-gray-100 resize-none rounded-xl focus:outline-none"
         placeholder="What's up?"
       />
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex items-center justify-between mt-2">
         <span
           className={`${!isContentTooLong ? "text-gray-500" : "text-red-500"}`}
         >
@@ -146,7 +150,7 @@ export const NewPost = () => {
           <Button
             onClick={() => addPost()}
             disabled={isDisabled || isPendingAddPost}
-            className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+            className="px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600"
           >
             {isPendingAddPost ? (
               <>
