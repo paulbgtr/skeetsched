@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
@@ -11,8 +12,9 @@ import { useCurrentDraftContext } from "@/context/current-draft-context";
 import { queryClient } from "@/lib/react-query/client";
 
 import LoadingSpinner from "@/components/loading-spinner";
-import { Draft } from "@/components/draft";
+import { Draft } from "@/features/draft";
 import { Button } from "../components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Sidebar() {
   const { data: session } = useSession();
@@ -51,18 +53,20 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 min-h-screen border-r-[1px] text-gray-800">
-      <nav className="flex flex-col p-4">
+    <aside className="w-72 min-h-screen border-r-[1px] text-gray-800">
+      <nav className="flex flex-col h-full p-4">
         <Button onClick={handleCreateDraft} variant="outline">
           New Draft
         </Button>
-        <div className="mt-3">
+        <div className="flex-grow mt-3">
           {isPending && <LoadingSpinner size="sm" />}
-          <div className="space-y-2">
-            {drafts?.map((draft) => (
-              <Draft key={draft.id} id={draft.id} content={draft.content} />
-            ))}
-          </div>
+          <ScrollArea className="overflow-auto max-h-[calc(100vh-120px)]">
+            <div className="space-y-2">
+              {drafts?.map((draft) => (
+                <Draft key={draft.id} id={draft.id} content={draft.content} />
+              ))}
+            </div>
+          </ScrollArea>
           {drafts?.length === 0 && (
             <p className="text-sm text-center text-gray-500">No drafts found</p>
           )}
