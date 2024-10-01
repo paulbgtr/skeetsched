@@ -27,6 +27,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import LoadingSpinner from "@/components/loading-spinner";
 
@@ -68,14 +69,14 @@ export const SchedulePost = ({
       <DialogTrigger asChild>
         <Button
           disabled={isDisabled}
-          className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Schedule
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <h2 className="font-bold text-xl mb-3">Schedule</h2>
+          <h2 className="mb-3 text-xl font-bold">Schedule</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -100,7 +101,7 @@ export const SchedulePost = ({
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -138,20 +139,22 @@ export const SchedulePost = ({
                   </>
                 )}
               />
-              <Button
-                type="submit"
-                disabled={isDisabled || isPendingSchedulePost}
-                className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isPendingSchedulePost ? (
-                  <>
-                    <LoadingSpinner size="sm" className="mr-2" />
-                    <span>Scheduling...</span>
-                  </>
-                ) : (
-                  "Schedule"
-                )}
-              </Button>
+              <DialogClose asChild>
+                <Button
+                  type="submit"
+                  disabled={isDisabled || isPendingSchedulePost}
+                  className="px-4 py-2 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPendingSchedulePost ? (
+                    <>
+                      <LoadingSpinner size="sm" className="mr-2" />
+                      <span>Scheduling...</span>
+                    </>
+                  ) : (
+                    "Schedule"
+                  )}
+                </Button>
+              </DialogClose>
             </form>
           </Form>
         </DialogHeader>
