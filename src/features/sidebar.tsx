@@ -29,7 +29,10 @@ export default function Sidebar() {
 
   const { data: drafts, isPending } = useQuery({
     queryKey: ["drafts"],
-    queryFn: () => getDraftsByUserHandle(handle),
+    queryFn: async () => {
+      const drafts = await getDraftsByUserHandle(handle);
+      return drafts.sort().reverse();
+    },
     enabled: !!handle,
   });
 
