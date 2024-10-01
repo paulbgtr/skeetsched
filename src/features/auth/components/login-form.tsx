@@ -1,5 +1,6 @@
 "use client";
 
+import { AtpSessionData } from "@atproto/api";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { useSession, signIn } from "next-auth/react";
@@ -33,16 +34,26 @@ export const LoginForm = () => {
     if (result?.error) {
       return console.log(result?.error);
     }
-    await createSession({
-      handle,
-      session: JSON.stringify(session?.user?.email),
-    });
+
+    if (!session) {
+      return;
+    }
+
+    const atpSession: AtpSessionData = {
+      refreshJwt: session?.refreshJwt,
+      accessJwt: session?.accessJwt,
+      handle: session?.user?.handle,
+      did: session?.user?.id,
+      active: true,
+    };
+
+    await createSession(atpSession);
     router.push("/dashboard/post");
   };
 
   return (
-    <div className="rounded-xl shadow-md p-8 w-96">
-      <h2 className="text-3xl font-black text-center mb-6">
+    <div className="p-8 shadow-md rounded-xl w-96">
+      <h2 className="mb-6 text-3xl font-black text-center">
         Sign in to your Bluesky account
       </h2>
       <form onSubmit={onsubmit}>
@@ -52,7 +63,7 @@ export const LoginForm = () => {
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
             required
-            className="rounded-xl border-gray-300 text-gray-600"
+            className="text-gray-600 border-gray-300 rounded-xl"
             placeholder="Email"
           />
         </div>
@@ -62,18 +73,18 @@ export const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="rounded-xl border-gray-300 text-gray-600"
+            className="text-gray-600 border-gray-300 rounded-xl"
             placeholder="Password"
           />
         </div>
         <Button
           type="submit"
-          className="w-full bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+          className="w-full px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600"
         >
           Login
         </Button>
       </form>
-      <div className="italic text-sm mt-4 text-center">
+      <div className="mt-4 text-sm italic text-center">
         <span className="text-gray-600">Don&apos;t have an account? </span>
         <Link href="https://bsky.app" className="text-blue-500 hover:underline">
           Sign up
