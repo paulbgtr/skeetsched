@@ -55,9 +55,11 @@ export default function Sidebar() {
         </Button>
         <div className="mt-3">
           {isPending && <LoadingSpinner size="sm" />}
-          {drafts?.map((draft) => (
-            <Draft key={draft.id} id={draft.id} content={draft.content} />
-          ))}
+          <div className="space-y-2">
+            {drafts?.map((draft) => (
+              <Draft key={draft.id} id={draft.id} content={draft.content} />
+            ))}
+          </div>
           {drafts?.length === 0 && (
             <p className="text-sm text-center text-gray-500">No drafts found</p>
           )}
