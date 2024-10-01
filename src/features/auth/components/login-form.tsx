@@ -7,7 +7,11 @@ import { useSession, signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createSession } from "@/app/actions/skeets/sessions";
+import {
+  createSession,
+  getSessionByHandle,
+  updateSessionByHandle,
+} from "@/app/actions/skeets/sessions";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -47,7 +51,13 @@ export const LoginForm = () => {
       active: true,
     };
 
-    await createSession(atpSession);
+    const [doesSessionExist] = await getSessionByHandle(handle);
+
+    if (!doesSessionExist) {
+      await createSession(atpSession);
+    }
+
+    await updateSessionByHandle(atpSession);
     router.push("/dashboard/post");
   };
 
