@@ -18,22 +18,18 @@ export default function Sidebar() {
   const { data: session } = useSession();
   const { setCurrentDraftId } = useCurrentDraftContext();
 
-  const [handle, setHandle] = useState();
+  const [handle, setHandle] = useState<string>("");
 
   useEffect(() => {
     if (!session) {
       return;
     }
-
-    const bskySession = session.user?.email;
-    const { handle } = bskySession;
-
-    setHandle(handle);
+    setHandle(session.user.handle);
   }, [session]);
 
   const { data: drafts, isPending } = useQuery({
     queryKey: ["drafts"],
-    queryFn: () => getDraftsByUserHandle(handle), // todo: fix err
+    queryFn: () => getDraftsByUserHandle(handle),
     enabled: !!handle,
   });
 
@@ -53,7 +49,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 min-h-screen border-r-[1px] text-gray-800">
-      <nav className="p-4 flex flex-col">
+      <nav className="flex flex-col p-4">
         <Button onClick={handleCreateDraft} variant="outline">
           New Draft
         </Button>
@@ -62,6 +58,9 @@ export default function Sidebar() {
           {drafts?.map((draft) => (
             <Draft key={draft.id} id={draft.id} content={draft.content} />
           ))}
+          {drafts?.length === 0 && (
+            <p className="text-sm text-center text-gray-500">No drafts found</p>
+          )}
         </div>
       </nav>
     </aside>
