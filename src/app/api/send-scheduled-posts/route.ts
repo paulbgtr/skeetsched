@@ -4,6 +4,7 @@ import {
 } from "@/app/actions/skeets/scheduledSkeets";
 import { getSessionByHandle } from "../../actions/skeets/sessions";
 import { createAgent } from "@/lib/bsky/agent";
+import { AtpSessionData } from "@atproto/api";
 
 export const dynamic = "force-dynamic";
 
@@ -43,8 +44,22 @@ export async function GET() {
     for (const skeet of skeetsToPost) {
       try {
         const [session] = await getSessionByHandle(skeet.userHandle);
-        const bskySession = JSON.parse(session?.session);
-        agent.sessionManager.session = bskySession;
+
+        const { refreshJwt, accessJwt, handle, did } = session;
+
+        const bskySession: AtpSessionData = {
+          refreshJwt,
+          accessJwt,
+          handle,
+          did,
+          active: true,
+        };
+
+        try {
+          agent.sessionManager.resumeSession(bskySession);
+        } catch (err) {
+          return new Response(`Error resuming session, ${err}`);
+        }
 
         console.log(
           `Posting skeet ID: ${skeet.id}, Content: ${skeet.content.substring(
