@@ -74,7 +74,7 @@ export const LoginForm = () => {
             onChange={(e) => setHandle(e.target.value)}
             required
             className="text-gray-600 border-gray-300 rounded-xl"
-            placeholder="Email"
+            placeholder="Handle"
           />
         </div>
         <div className="mb-4">
