@@ -14,10 +14,10 @@ export const Draft = ({ id, content }: { id: string; content: string }) => {
 
   return (
     <div onClick={() => setCurrentDraftId(id)} className="cursor-pointer">
-      <div className="text-sm h-36 duration-200 hover:shadow-blue-300 shadow-md rounded-xl pt-2 pl-3 flex flex-col">
+      <div className="flex flex-col pt-2 pl-3 text-sm duration-200 shadow-md hover:bg-gray-100 h-36 rounded-xl">
         <button
           onClick={() => deleteDraft(id)}
-          className="duration-200 hover:bg-gray-300 flex items-center justify-center w-6 h-6 text-gray-500 bg-gray-100 rounded-full self-end mr-3"
+          className="flex items-center self-end justify-center w-6 h-6 mr-3 text-gray-500 duration-200 bg-gray-100 rounded-full hover:bg-gray-300"
         >
           <TrashIcon className="w-4 h-5 text-gray-500" />
         </button>
