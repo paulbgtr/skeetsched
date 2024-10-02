@@ -8,7 +8,7 @@ import { AtpSessionData } from "@atproto/api";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function POST() {
   try {
     const allSkeets = await getScheduledSkeets();
     const now = new Date();
