@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { AtpSessionData } from "@atproto/api";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
@@ -62,10 +63,20 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="p-8 shadow-md rounded-xl w-96">
-      <h2 className="mb-6 text-3xl font-black text-center">
-        Sign in to your Bluesky account
-      </h2>
+    <div className="space-y-6 max-w-sm px-3">
+      <header className="text-center space-y-3">
+        <h2 className="text-3xl font-black">Sign in to your Bluesky account</h2>
+        <p>
+          We recommend using an{" "}
+          <Link
+            className="text-blue-500 hover:underline"
+            href="https://bsky.app/profile/safety.bsky.app/post/3k7waehomo52m"
+          >
+            app password
+          </Link>{" "}
+          to log in.
+        </p>
+      </header>
       <form onSubmit={onsubmit}>
         <div className="mb-4">
           <Input
@@ -73,7 +84,6 @@ export const LoginForm = () => {
             value={handle}
             onChange={(e) => setHandle(e.target.value)}
             required
-            className="text-gray-600 border-gray-300 rounded-xl"
             placeholder="Handle"
           />
         </div>
@@ -83,7 +93,6 @@ export const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="text-gray-600 border-gray-300 rounded-xl"
             placeholder="Password"
           />
         </div>
