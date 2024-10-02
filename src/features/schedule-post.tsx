@@ -6,6 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -127,10 +128,10 @@ export const SchedulePost = ({
                     <FormItem className="flex flex-col">
                       <FormLabel>Time</FormLabel>
                       <FormControl>
-                        <input
+                        <Input
                           value={field.value}
                           onChange={field.onChange}
-                          className="text-sm w-[8rem] border-[1px] rounded-md py-[0.4rem] px-3"
+                          className="w-[8rem]"
                           type="time"
                         />
                       </FormControl>
