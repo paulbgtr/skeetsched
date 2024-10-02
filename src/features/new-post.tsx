@@ -64,11 +64,11 @@ export const NewPost = () => {
 
   const { mutate: deleteDraft } = useMutation({
     mutationFn: deleteDrafts,
-    onSuccess: () => cleanUp(),
+    onSuccess: () => cleanUp("drafts"),
   });
 
-  const cleanUp = () => {
-    queryClient.invalidateQueries({ queryKey: ["drafts"] });
+  const cleanUp = (key?: string) => {
+    key && queryClient.invalidateQueries({ queryKey: [key] });
     if (currentDraftId) {
       deleteDraft(currentDraftId);
     }
@@ -89,7 +89,7 @@ export const NewPost = () => {
           title: "Skeet scheduled",
           description: formatDateForNotification(postAt),
         });
-        cleanUp();
+        cleanUp("scheduled-posts");
       },
     });
 
