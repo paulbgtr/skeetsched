@@ -55,7 +55,7 @@ export default function Sidebar() {
   return (
     <aside className="w-72 min-h-screen border-r-[1px] text-gray-800">
       <nav className="flex flex-col h-full p-4">
-        <Button onClick={handleCreateDraft} variant="outline">
+        <Button onClick={handleCreateDraft} variant="secondary">
           New Draft
         </Button>
         <div className="flex-grow mt-3">
