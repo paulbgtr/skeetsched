@@ -5,35 +5,44 @@ import { useRouter } from "next/navigation";
 import { AtpAgent, AtpSessionData } from "@atproto/api";
 
 const useAgent = () => {
-  const [agent] = useState<AtpAgent>(createAgent());
-
+  const [agent, setAgent] = useState<AtpAgent | null>(null);
   const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "loading") {
-      return;
-    }
+    if (status === "loading") return;
 
     if (!session?.user) {
       router.push("/");
+      return;
     }
 
-    const getAgent = async () => {
-      if (agent && session) {
+    const initializeAgent = async () => {
+      try {
+        const newAgent = createAgent();
+
         const atpSession: AtpSessionData = {
-          refreshJwt: session?.refreshJwt,
-          accessJwt: session?.accessJwt,
-          handle: session?.user?.handle,
-          did: session?.user?.id,
+          refreshJwt: session.refreshJwt,
+          accessJwt: session.accessJwt,
+          handle: session.user.handle,
+          did: session.user.id,
           active: true,
         };
-        agent.sessionManager.session = atpSession;
+
+        try {
+          await newAgent.resumeSession(atpSession);
+          setAgent(newAgent);
+        } catch (error) {
+          console.error("Failed to resume session:", error);
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Failed to initialize agent:", error);
       }
     };
 
-    getAgent();
-  }, [router, session, status, agent]);
+    initializeAgent();
+  }, [router, session, status]);
 
   return { agent };
 };
