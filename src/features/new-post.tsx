@@ -132,7 +132,7 @@ export const NewPost = () => {
       <textarea
         onChange={handleContentChange}
         value={content}
-        className="w-full h-full p-3 border-[1px] border-gray-700 resize-none rounded-xl focus:outline-none bg-black"
+        className="w-full h-full p-3 border-[1px] border-gray-700 resize-none rounded-xl focus:outline-none bg-transparent"
         placeholder="What's up?"
       />
       <div className="flex items-center justify-between mt-2">
