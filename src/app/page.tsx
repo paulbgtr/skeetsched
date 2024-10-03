@@ -15,7 +15,7 @@ export default function Home() {
           for Bluesky.
         </p>
         <div className="flex gap-3">
-          <Button asChild className="font-bold py-5">
+          <Button variant="accent" asChild className="font-bold py-5">
             <Link href="/login">Get Started</Link>
           </Button>
           <Button variant="outline" asChild className="font-bold gap-1 py-5">

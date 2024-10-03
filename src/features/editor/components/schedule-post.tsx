@@ -68,10 +68,7 @@ export const SchedulePost = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          disabled={isDisabled}
-          className="px-4 py-2 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button disabled={isDisabled} variant="warning">
           Schedule
         </Button>
       </DialogTrigger>
@@ -144,7 +141,7 @@ export const SchedulePost = ({
                 <Button
                   type="submit"
                   disabled={isDisabled || isPendingSchedulePost}
-                  className="px-4 py-2 text-white bg-yellow-500 rounded-full hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="warning"
                 >
                   {isPendingSchedulePost ? (
                     <>

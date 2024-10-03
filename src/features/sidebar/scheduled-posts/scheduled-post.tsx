@@ -64,11 +64,17 @@ export const ScheduledPost = ({
             <DialogTitle>
               Are you sure you want to delete this post?
             </DialogTitle>
-            <DialogDescription>This action cannot be undone.</DialogDescription>
+            <DialogDescription>
+              Deleting this post will remove it from your scheduled posts list.
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button onClick={() => deletePost(id)} type="button">
+              <Button
+                variant="destructive"
+                onClick={() => deletePost(id)}
+                type="button"
+              >
                 Delete
               </Button>
             </DialogClose>

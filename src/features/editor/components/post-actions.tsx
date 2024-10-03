@@ -28,7 +28,7 @@ export const PostActions: React.FC<PostActionsProps> = ({
     <Button
       onClick={onPost}
       disabled={isDisabled || isPendingAddPost}
-      className="px-4 py-2 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+      variant="accent"
     >
       {isPendingAddPost ? (
         <>
