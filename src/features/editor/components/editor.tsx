@@ -4,6 +4,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import useNewPost from "@/hooks/use-new-post";
 
+import { EditorProfile } from "./editor-profile";
 import { PostActions } from "./post-actions";
 import { PostTextArea } from "./post-text-area";
 import { CharacterCounter } from "./character-counter";
@@ -24,8 +25,8 @@ export const Editor = () => {
     content.length === 0 || content.length > MAX_CONTENT_LENGTH;
 
   return (
-    <div className="w-full max-w-2xl">
-      <h1 className="mb-4 text-xl font-bold">Compose a Skeet</h1>
+    <div className="w-full space-y-3 max-w-2xl">
+      <EditorProfile />
 
       <PostTextArea
         value={content}
@@ -43,9 +44,8 @@ export const Editor = () => {
           onSchedule={handleSchedulePost}
           onPost={handlePost}
         />
-
-        <Toaster />
       </div>
+      <Toaster />
     </div>
   );
 };
