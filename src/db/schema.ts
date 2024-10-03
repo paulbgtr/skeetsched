@@ -1,8 +1,8 @@
 import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
-export const scheduledSkeets = pgTable("scheduled_skeets", {
+export const scheduledPosts = pgTable("scheduled_posts", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userHandle: text("user_handle").notNull(),
+  handle: text("handle").notNull(),
   content: varchar("content", { length: 300 }).notNull(),
   postAt: timestamp("post_at", {
     withTimezone: true,
@@ -14,7 +14,7 @@ export const scheduledSkeets = pgTable("scheduled_skeets", {
 
 export const drafts = pgTable("drafts", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userHandle: text("user_handle").notNull(),
+  handle: text("handle").notNull(),
   content: varchar("content", { length: 300 }).notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,

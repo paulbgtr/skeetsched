@@ -12,9 +12,9 @@ export const getDrafts = async () => {
   }
 };
 
-export const getDraftsByUserHandle = (handle: string) => {
+export const getDraftsByHandle = (handle: string) => {
   try {
-    return db.select().from(drafts).where(eq(drafts.userHandle, handle));
+    return db.select().from(drafts).where(eq(drafts.handle, handle));
   } catch (err) {
     throw err;
   }
@@ -29,7 +29,7 @@ export const getDraftById = (id: string) => {
 };
 
 export const createDraft = async (data: {
-  userHandle: string;
+  handle: string;
   content: string;
 }) => {
   try {
