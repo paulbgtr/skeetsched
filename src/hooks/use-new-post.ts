@@ -12,6 +12,7 @@ import {
   getDraftById,
 } from "@/app/actions/posts/drafts";
 import { formatDateForNotification } from "@/lib/utils";
+import { AtpBaseClient, RichText } from "@atproto/api";
 
 const useNewPost = () => {
   const { toast } = useToast();
@@ -67,7 +68,19 @@ const useNewPost = () => {
 
   const { mutate: addPost, isPending: isPendingAddPost } = useMutation({
     mutationFn: async () => {
-      await agent?.post({ text: content });
+      const rt = new RichText({
+        text: content,
+      });
+      await rt.detectFacets(agent as AtpBaseClient);
+
+      const postRecord = {
+        $type: "app.bsky.feed.post",
+        text: rt.text,
+        facets: rt.facets,
+        createdAt: new Date().toISOString(),
+      };
+
+      await agent?.post(postRecord);
     },
     onSuccess: () => {
       toast({
