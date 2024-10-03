@@ -5,7 +5,7 @@ import useAgent from "@/hooks/bsky/use-agent";
 import { useToast } from "@/hooks/shadcn/use-toast";
 import { useCurrentDraftContext } from "@/context/current-draft-context";
 import { queryClient } from "@/lib/react-query/client";
-import { createScheduledSkeet } from "@/app/actions/posts/scheduled-posts";
+import { createScheduledPost } from "../app/actions/posts/scheduled-posts";
 import {
   deleteDrafts,
   updateDrafts,
@@ -52,7 +52,7 @@ const useNewPost = () => {
 
   const { mutate: schedulePost, isPending: isPendingSchedulePost } =
     useMutation({
-      mutationFn: createScheduledSkeet,
+      mutationFn: createScheduledPost,
       onSuccess: ([data]) => {
         const { postAt } = data;
         if (!postAt) return;
@@ -93,7 +93,7 @@ const useNewPost = () => {
 
     try {
       schedulePost({
-        userHandle: agent.sessionManager.session.handle,
+        handle: agent.sessionManager.session.handle,
         content,
         postAt,
       });

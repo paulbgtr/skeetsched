@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { getScheduledSkeetByUserHandle } from "../../../app/actions/skeets/scheduledSkeets";
+import { getScheduledPostByHandle } from "@/app/actions/posts/scheduled-posts";
 
 import LoadingSpinner from "@/components/loading-spinner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,7 +23,7 @@ export const ScheduledPostsTab = () => {
   const { data: posts, isPending } = useQuery({
     queryKey: ["scheduled-posts"],
     queryFn: async () => {
-      const drafts = await getScheduledSkeetByUserHandle(handle);
+      const drafts = await getScheduledPostByHandle(handle);
       return drafts.sort().reverse();
     },
     enabled: !!handle,

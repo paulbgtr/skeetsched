@@ -1,8 +1,8 @@
 import {
-  getScheduledSkeets,
-  deleteScheduledSkeet,
-} from "@/app/actions/skeets/scheduledSkeets";
-import { getSessionByHandle } from "../../actions/skeets/sessions";
+  getScheduledPosts,
+  deleteScheduledPost,
+} from "@/app/actions/posts/scheduled-posts";
+import { getSessionByHandle } from "../../actions/posts/sessions";
 import { createAgent } from "@/lib/bsky/agent";
 import { AtpSessionData } from "@atproto/api";
 
@@ -10,20 +10,20 @@ export const dynamic = "force-dynamic";
 
 export async function POST() {
   try {
-    const allSkeets = await getScheduledSkeets();
+    const allPosts = await getScheduledPosts();
     const now = new Date();
 
-    const skeetsToPost = allSkeets.filter((skeet) => {
-      if (!skeet.postAt) return false;
+    const postsToPost = allPosts.filter((post) => {
+      if (!post.postAt) return false;
 
-      const postAtDate = new Date(skeet.postAt);
+      const postAtDate = new Date(post.postAt);
 
       const isReady =
         Math.floor(postAtDate.getTime() / 1000) <=
         Math.floor(now.getTime() / 1000);
 
       console.log(
-        `Skeet ID: ${skeet.id}, Content: ${skeet.content.substring(
+        `Skeet ID: ${post.id}, Content: ${post.content.substring(
           0,
           20
         )}..., PostAt: ${postAtDate.toISOString()}, Is Ready: ${isReady}`
@@ -32,18 +32,18 @@ export async function POST() {
       return isReady;
     });
 
-    if (skeetsToPost.length === 0) {
+    if (postsToPost.length === 0) {
       console.log("No skeets to post");
       return new Response("No skeets to post");
     }
 
-    console.log(`Found ${skeetsToPost.length} skeets to post`);
+    console.log(`Found ${postsToPost.length} skeets to post`);
 
     const agent = createAgent();
 
-    for (const skeet of skeetsToPost) {
+    for (const post of postsToPost) {
       try {
-        const [session] = await getSessionByHandle(skeet.userHandle);
+        const [session] = await getSessionByHandle(post.handle);
 
         const { refreshJwt, accessJwt, handle, did } = session;
 
@@ -62,24 +62,24 @@ export async function POST() {
         }
 
         console.log(
-          `Posting skeet ID: ${skeet.id}, Content: ${skeet.content.substring(
+          `Posting skeet ID: ${post.id}, Content: ${post.content.substring(
             0,
             20
           )}...`
         );
 
         await agent.post({
-          text: skeet.content,
+          text: post.content,
         });
 
-        await deleteScheduledSkeet(skeet.id!);
-        console.log(`Successfully posted and deleted skeet ID: ${skeet.id}`);
+        await deleteScheduledPost(post.id);
+        console.log(`Successfully posted and deleted skeet ID: ${post.id}`);
       } catch (err) {
-        console.error(`Error posting skeet ID: ${skeet.id}`, err);
+        console.error(`Error posting skeet ID: ${post.id}`, err);
       }
     }
 
-    return new Response(`Posted ${skeetsToPost.length} skeets`);
+    return new Response(`Posted ${postsToPost.length} skeets`);
   } catch (err) {
     console.error("Error in GET function:", err);
     return new Response("Error posting skeets");

@@ -1,6 +1,6 @@
 "use client";
 
-import useProfile from "@/hooks/useProfile";
+import useProfile from "@/hooks/bsky/use-profile";
 import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

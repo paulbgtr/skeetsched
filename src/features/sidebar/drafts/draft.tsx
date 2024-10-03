@@ -1,6 +1,6 @@
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useCurrentDraftContext } from "@/context/current-draft-context";
-import { deleteDrafts } from "@/app/actions/skeets/drafts";
+import { deleteDrafts } from "@/app/actions/posts/drafts";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query/client";
 

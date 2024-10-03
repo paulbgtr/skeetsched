@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query/client";
-import { deleteScheduledSkeet } from "../../../app/actions/skeets/scheduledSkeets";
+import { deleteScheduledPost } from "@/app/actions/posts/scheduled-posts";
 
 import { TrashIcon } from "@radix-ui/react-icons";
 import {
@@ -25,7 +25,7 @@ export const ScheduledPost = ({
   postAt: Date;
 }) => {
   const { mutate: deletePost } = useMutation({
-    mutationFn: deleteScheduledSkeet,
+    mutationFn: deleteScheduledPost,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["scheduled-posts"] }),
   });
@@ -68,12 +68,13 @@ export const ScheduledPost = ({
           </DialogHeader>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button
-                onClick={() => deletePost(id)}
-                type="button"
-                variant="secondary"
-              >
+              <Button onClick={() => deletePost(id)} type="button">
                 Delete
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancel
               </Button>
             </DialogClose>
           </DialogFooter>

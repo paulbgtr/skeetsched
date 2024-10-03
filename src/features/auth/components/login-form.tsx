@@ -12,7 +12,7 @@ import {
   createSession,
   getSessionByHandle,
   updateSessionByHandle,
-} from "@/app/actions/skeets/sessions";
+} from "@/app/actions/posts/sessions";
 
 export const LoginForm = () => {
   const router = useRouter();

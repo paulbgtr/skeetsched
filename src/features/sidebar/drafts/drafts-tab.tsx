@@ -4,9 +4,9 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  getDraftsByUserHandle,
+  getDraftsByHandle,
   createDraft,
-} from "../../../app/actions/skeets/drafts";
+} from "../../../app/actions/posts/drafts";
 import { useSession } from "next-auth/react";
 import { useCurrentDraftContext } from "@/context/current-draft-context";
 import { queryClient } from "@/lib/react-query/client";
@@ -32,7 +32,7 @@ export const DraftsTab = () => {
   const { data: drafts, isPending } = useQuery({
     queryKey: ["drafts"],
     queryFn: async () => {
-      const drafts = await getDraftsByUserHandle(handle);
+      const drafts = await getDraftsByHandle(handle);
       return drafts.sort().reverse();
     },
     enabled: !!handle,
@@ -48,7 +48,7 @@ export const DraftsTab = () => {
 
   const handleCreateDraft = () => {
     if (handle) {
-      createNewDraft({ userHandle: handle, content: "" });
+      createNewDraft({ handle, content: "" });
     }
   };
 
