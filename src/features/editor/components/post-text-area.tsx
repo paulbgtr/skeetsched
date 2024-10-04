@@ -88,7 +88,7 @@ export const PostTextArea = ({ value, onChange }: PostTextAreaProps) => {
         ref={textareaRef}
         onChange={onChange}
         value={value}
-        className="relative w-full h-full p-3 border-[1px] border-gray-700 resize-none rounded-xl focus:outline-none bg-transparent placeholder:text-gray-500 text-transparent caret-white overflow-auto"
+        className="relative w-full h-full p-3 resize-none focus:outline-none bg-transparent placeholder:text-gray-500 text-transparent caret-white overflow-auto"
         style={{
           caretColor: "white",
         }}
