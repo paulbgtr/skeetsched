@@ -25,3 +25,53 @@ export const formatDateForNotification = (date: Date) => {
 
   return notificationMessage;
 };
+
+export const convertBase64ToBlob = async (
+  base64Image: string,
+  maxWidth = 1000,
+  maxHeight = 1000,
+  mimeType = "image/webp",
+  quality = 0.8
+) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = base64Image;
+
+    img.onload = () => {
+      // Create a canvas element
+      const canvas = document.createElement("canvas");
+      let width = img.width;
+      let height = img.height;
+
+      // Resize image to fit within the max width/height
+      if (width > maxWidth || height > maxHeight) {
+        if (width > height) {
+          height = Math.floor((height * maxWidth) / width);
+          width = maxWidth;
+        } else {
+          width = Math.floor((width * maxHeight) / height);
+          height = maxHeight;
+        }
+      }
+
+      // Set canvas dimensions and draw image on canvas
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(img, 0, 0, width, height);
+
+      // Convert canvas to Blob
+      canvas.toBlob(
+        (blob) => {
+          resolve(blob);
+        },
+        mimeType,
+        quality
+      );
+    };
+
+    img.onerror = (err) => {
+      reject(err);
+    };
+  });
+};
