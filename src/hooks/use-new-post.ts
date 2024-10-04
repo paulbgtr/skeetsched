@@ -17,7 +17,7 @@ import { AtpBaseClient, RichText } from "@atproto/api";
 const useNewPost = () => {
   const { toast } = useToast();
   const { agent } = useAgent();
-  const { currentDraftId } = useCurrentDraftContext();
+  const { currentDraftId, setCurrentDraftId } = useCurrentDraftContext();
   const [content, setContent] = useState("");
 
   const { data: draft } = useQuery({
@@ -81,6 +81,7 @@ const useNewPost = () => {
       };
 
       await agent?.post(postRecord);
+      setCurrentDraftId(null);
     },
     onSuccess: () => {
       toast({
