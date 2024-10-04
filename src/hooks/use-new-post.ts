@@ -13,12 +13,15 @@ import {
 } from "@/app/actions/posts/drafts";
 import { formatDateForNotification } from "@/lib/utils";
 import { AtpBaseClient, RichText } from "@atproto/api";
+import { convertBase64ToBlob } from "@/lib/utils";
+import { InputSchema } from "@atproto/api/dist/client/types/com/atproto/admin/getAccountInfo";
 
 const useNewPost = () => {
   const { toast } = useToast();
   const { agent } = useAgent();
   const { currentDraftId, setCurrentDraftId } = useCurrentDraftContext();
   const [content, setContent] = useState("");
+  const [images, setImages] = useState([]);
 
   const { data: draft } = useQuery({
     queryKey: ["draft", currentDraftId],
@@ -68,15 +71,43 @@ const useNewPost = () => {
 
   const { mutate: addPost, isPending: isPendingAddPost } = useMutation({
     mutationFn: async () => {
+      if (!agent) return;
+
       const rt = new RichText({
         text: content,
       });
       await rt.detectFacets(agent as AtpBaseClient);
 
+      const imageBlobs = (await Promise.all(
+        images.map(async (image) => {
+          return convertBase64ToBlob(image["data_url"]);
+        })
+      )) as InputSchema[];
+
+      const uploadedImages = await Promise.all(
+        imageBlobs.map(async (imageBlob) => {
+          const { data } = await agent.uploadBlob(imageBlob, {
+            encoding: "image/webp",
+          });
+          return data.blob;
+        })
+      );
+
       const postRecord = {
         $type: "app.bsky.feed.post",
         text: rt.text,
         facets: rt.facets,
+        embed: {
+          $type: "app.bsky.embed.images",
+          images: uploadedImages.map((blob, index) => ({
+            alt: `Image ${index + 1}`, // todo: customize alt text
+            image: blob,
+            aspectRatio: {
+              width: 1000,
+              height: 500,
+            },
+          })),
+        },
         createdAt: new Date().toISOString(),
       };
 
@@ -119,6 +150,8 @@ const useNewPost = () => {
   return {
     content,
     handleContentChange,
+    images,
+    setImages,
     handleSchedulePost,
     handlePost: () => addPost(),
     isPendingSchedulePost,
