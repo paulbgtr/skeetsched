@@ -4,6 +4,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import useNewPost from "@/hooks/use-new-post";
 
+import { AttachmentActions } from "./attachment-actions";
 import { EditorProfile } from "./editor-profile";
 import { PostActions } from "./post-actions";
 import { PostTextArea } from "./post-text-area";
@@ -15,6 +16,8 @@ export const Editor = () => {
   const {
     content,
     handleContentChange,
+    images,
+    setImages,
     handleSchedulePost,
     handlePost,
     isPendingSchedulePost,
@@ -25,10 +28,13 @@ export const Editor = () => {
     content.length === 0 || content.length > MAX_CONTENT_LENGTH;
 
   return (
-    <div className="w-full space-y-3 max-w-2xl">
+    <div className="w-full space-y-3 flex h-[40vh] flex-col max-w-2xl">
       <EditorProfile />
 
-      <PostTextArea value={content} onChange={handleContentChange} />
+      <div className="flex border-gray-700 rounded-xl border-[1px] flex-col h-full">
+        <PostTextArea value={content} onChange={handleContentChange} />
+        <AttachmentActions images={images} onSetImages={setImages} />
+      </div>
 
       <div className="flex items-center justify-between mt-2">
         <CharacterCounter current={content.length} max={MAX_CONTENT_LENGTH} />
