@@ -1,7 +1,6 @@
 interface PostTextAreaProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  maxLength: number;
 }
 
 export const PostTextArea = ({ value, onChange }: PostTextAreaProps) => (

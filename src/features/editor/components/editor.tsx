@@ -28,11 +28,7 @@ export const Editor = () => {
     <div className="w-full space-y-3 max-w-2xl">
       <EditorProfile />
 
-      <PostTextArea
-        value={content}
-        onChange={handleContentChange}
-        maxLength={MAX_CONTENT_LENGTH}
-      />
+      <PostTextArea value={content} onChange={handleContentChange} />
 
       <div className="flex items-center justify-between mt-2">
         <CharacterCounter current={content.length} max={MAX_CONTENT_LENGTH} />
