@@ -16,7 +16,7 @@ import { AtpBaseClient, RichText } from "@atproto/api";
 import { convertBase64ToBlob } from "@/lib/utils";
 import { InputSchema } from "@atproto/api/dist/client/types/com/atproto/admin/getAccountInfo";
 
-const useNewPost = () => {
+const useEditor = () => {
   const { toast } = useToast();
   const { agent } = useAgent();
   const { currentDraftId, setCurrentDraftId } = useCurrentDraftContext();
@@ -161,4 +161,4 @@ const useNewPost = () => {
   };
 };
 
-export default useNewPost;
+export default useEditor;
