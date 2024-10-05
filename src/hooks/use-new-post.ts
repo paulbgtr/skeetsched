@@ -113,6 +113,8 @@ const useNewPost = () => {
 
       await agent?.post(postRecord);
       setCurrentDraftId(null);
+      setImages([]);
+      setContent("");
     },
     onSuccess: () => {
       toast({
