@@ -16,9 +16,12 @@ import { PostTextArea } from "./post-text-area";
 import { CharacterCounter } from "./character-counter";
 import { PencilIcon } from "lucide-react";
 
+import { useState, useEffect } from "react";
+
 const MAX_CONTENT_LENGTH = 300;
 
 export const Editor = () => {
+  const [isVisible, setIsVisible] = useState(false);
   const {
     content,
     handleContentChange,
@@ -40,6 +43,14 @@ export const Editor = () => {
     (content.length === 0 && images.length === 0) ||
     content.length > MAX_CONTENT_LENGTH;
 
+  useEffect(() => {
+    if (currentDraftId) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
+    }
+  }, [currentDraftId]);
+
   if (!currentDraftId) {
     return (
       <div className="w-full max-w-md flex justify-center">
@@ -57,7 +68,11 @@ export const Editor = () => {
 
   return (
     <>
-      <div className="w-full border-gray-700 rounded-xl border-[1px] space-y-3 flex h-[40vh] flex-col max-w-2xl">
+      <div
+        className={`w-full border-gray-700 rounded-xl border-[1px] space-y-3 flex flex-col max-w-2xl transition-all duration-300 ease-in-out ${
+          isVisible ? "opacity-100 h-[40vh]" : "opacity-0 h-0"
+        }`}
+      >
         <div className="flex items-center justify-between px-3 pt-3">
           {profile && <EditorProfile profile={profile} />}
 
