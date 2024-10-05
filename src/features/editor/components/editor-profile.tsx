@@ -1,11 +1,12 @@
-import useProfile from "@/hooks/bsky/use-profile";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 
-export const EditorProfile = () => {
-  const { profile } = useProfile();
-
+export const EditorProfile = ({
+  profile,
+}: {
+  profile: ProfileViewDetailed;
+}) => {
   return (
     <div className="flex gap-3 items-center">
       <Avatar className="hover:opacity-80 duration-200">
