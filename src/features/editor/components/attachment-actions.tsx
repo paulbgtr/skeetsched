@@ -28,7 +28,7 @@ export const AttachmentActions = ({
       >
         {({ imageList, onImageUpload, onImageRemove }) => (
           <div>
-            <div className="flex gap-3 border-b-[1px]">
+            <div className="flex gap-3">
               {imageList.map((image, index) => (
                 <AttachedContent
                   key={index}
