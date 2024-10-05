@@ -5,8 +5,20 @@ import { ProfileViewDetailed } from "@atproto/api/dist/client/types/app/bsky/act
 export const EditorProfile = ({
   profile,
 }: {
-  profile: ProfileViewDetailed;
+  profile: ProfileViewDetailed | null;
 }) => {
+  if (!profile) {
+    return (
+      <div className="flex gap-3 items-center">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[200px]" />
+          <Skeleton className="h-4 w-[150px]" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex gap-3 items-center">
       <Avatar className="hover:opacity-80 duration-200">

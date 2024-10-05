@@ -7,6 +7,7 @@ import { useCurrentDraftContext } from "@/context/current-draft-context";
 import useDrafts from "@/hooks/use-drafts";
 import useProfile from "@/hooks/bsky/use-profile";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AttachmentActions } from "./attachment-actions";
@@ -74,7 +75,7 @@ export const Editor = () => {
         }`}
       >
         <div className="flex items-center justify-between px-3 pt-3">
-          {profile && <EditorProfile profile={profile} />}
+          <EditorProfile profile={profile} />
 
           <PostActions
             isDisabled={isDisabled}
