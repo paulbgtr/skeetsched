@@ -26,6 +26,7 @@ export const getScheduledPostByHandle = (handle: string) => {
 export const createScheduledPost = async (data: {
   handle: string;
   content: string;
+  imageUrls?: string[];
   postAt: Date;
 }) => {
   try {
@@ -40,6 +41,7 @@ export const updateScheduledPost = async (
   data: {
     userHandle: string;
     content: string;
+    imageUrls: string[];
     postAt: Date;
   }
 ) => {

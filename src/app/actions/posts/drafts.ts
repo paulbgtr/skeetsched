@@ -31,6 +31,7 @@ export const getDraftById = (id: string) => {
 export const createDraft = async (data: {
   handle: string;
   content: string;
+  imageUrls?: string[];
 }) => {
   try {
     return await db.insert(drafts).values(data).returning();
@@ -52,6 +53,7 @@ export const updateDrafts = async (
   data: {
     userHandle?: string;
     content?: string;
+    imageUrls?: string[];
   }
 ) => {
   try {
