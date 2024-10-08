@@ -1,3 +1,4 @@
+import { uploadFile } from "@/app/actions/gcloud/storage";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -74,4 +75,27 @@ export const convertBase64ToBlob = async (
       reject(err);
     };
   });
+};
+
+export const uploadImagesAndGetUrls = async (
+  images: Record<string, File>[]
+) => {
+  const imageUrls = await Promise.all(
+    images.map(async (image, index) => {
+      const { file } = image;
+      const blob = new Blob([file]);
+      const arrayBuffer = await blob.arrayBuffer();
+      const base64 = btoa(
+        new Uint8Array(arrayBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+
+      const fileName = `${Date.now()}_${index}_${file["name"]}`;
+      const url = await uploadFile(base64, fileName);
+      return url;
+    })
+  );
+  return imageUrls;
 };

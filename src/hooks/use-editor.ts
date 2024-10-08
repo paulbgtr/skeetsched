@@ -15,7 +15,7 @@ import { formatDateForNotification } from "@/lib/utils";
 import { AtpBaseClient, RichText } from "@atproto/api";
 import { convertBase64ToBlob } from "@/lib/utils";
 import { InputSchema } from "@atproto/api/dist/client/types/com/atproto/admin/getAccountInfo";
-import { uploadFile } from "@/app/actions/gcloud/storage";
+import { uploadImagesAndGetUrls } from "@/lib/utils";
 
 const useEditor = () => {
   const { toast } = useToast();
@@ -139,23 +139,7 @@ const useEditor = () => {
     if (!agent?.sessionManager?.session) return;
 
     try {
-      const imageUrls = await Promise.all(
-        images.map(async (image, index) => {
-          const { file } = image;
-          const blob = new Blob([file]);
-          const arrayBuffer = await blob.arrayBuffer();
-          const base64 = btoa(
-            new Uint8Array(arrayBuffer).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ""
-            )
-          );
-
-          const fileName = `${Date.now()}_${index}_${file["name"]}`;
-          const url = await uploadFile(base64, fileName);
-          return url;
-        })
-      );
+      const imageUrls = await uploadImagesAndGetUrls(images);
 
       schedulePost({
         handle: agent.sessionManager.session.handle,
