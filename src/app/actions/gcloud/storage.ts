@@ -2,13 +2,17 @@
 
 import { GetSignedUrlConfig, Storage } from "@google-cloud/storage";
 
-const storage = new Storage({
-  projectId: "skeetsched-436907",
-});
+const storage = new Storage();
 
 const generateSignedUrl = async (fileName: string) => {
   if (!process.env.BUCKET_NAME) {
     throw new Error("BUCKET_NAME is not set");
+  }
+
+  const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+  if (!keyPath) {
+    throw new Error("GOOGLE_APPLICATION_CREDENTIALS is not set");
   }
 
   const options = {
