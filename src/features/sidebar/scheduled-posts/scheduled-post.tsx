@@ -19,10 +19,12 @@ export const ScheduledPost = ({
   id,
   content,
   postAt,
+  imagesCount,
 }: {
   id: string;
   content: string;
   postAt: Date;
+  imagesCount?: number;
 }) => {
   const { mutate: deletePost } = useMutation({
     mutationFn: deleteScheduledPost,
@@ -49,6 +51,16 @@ export const ScheduledPost = ({
       second: "2-digit",
       hour12: false,
     });
+  };
+
+  const renderImageInfo = () => {
+    if (!imagesCount || imagesCount <= 0) return null;
+    return (
+      <span className="flex items-center text-gray-400">
+        <span className="mr-1">🖼️</span>
+        {imagesCount > 1 && <span className="text-xs">{imagesCount}</span>}
+      </span>
+    );
   };
 
   return (
@@ -93,7 +105,10 @@ export const ScheduledPost = ({
           <span className="text-gray-400">Empty draft</span>
         )}
       </div>
-      <time className="text-gray-400 mt-auto">{getPostAt()}</time>
+      <div className="flex items-center justify-between mt-2">
+        <time className="text-gray-400">{getPostAt()}</time>
+        {renderImageInfo()}
+      </div>
     </div>
   );
 };

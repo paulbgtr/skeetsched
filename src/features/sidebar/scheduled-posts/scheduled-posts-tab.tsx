@@ -23,8 +23,8 @@ export const ScheduledPostsTab = () => {
   const { data: posts, isPending } = useQuery({
     queryKey: ["scheduled-posts"],
     queryFn: async () => {
-      const drafts = await getScheduledPostByHandle(handle);
-      return drafts.sort().reverse();
+      const scheduledPosts = await getScheduledPostByHandle(handle);
+      return scheduledPosts.sort().reverse();
     },
     enabled: !!handle,
   });
@@ -41,6 +41,7 @@ export const ScheduledPostsTab = () => {
                 id={post.id}
                 content={post.content}
                 postAt={post.postAt}
+                imagesCount={post.imageUrls?.length}
               />
             ))}
           </div>
