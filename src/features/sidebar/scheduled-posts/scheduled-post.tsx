@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query/client";
 import { deleteScheduledPost } from "@/app/actions/posts/scheduled-posts";
 
-import { TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon, ImageIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogClose,
@@ -53,13 +53,13 @@ export const ScheduledPost = ({
     });
   };
 
-  const renderImageInfo = () => {
+  const renderImageCounter = () => {
     if (!imagesCount || imagesCount <= 0) return null;
     return (
-      <span className="flex items-center text-gray-400">
-        <span className="mr-1">🖼️</span>
-        {imagesCount > 1 && <span className="text-xs">{imagesCount}</span>}
-      </span>
+      <div className="flex items-center text-gray-400">
+        <ImageIcon className="w-4 h-4 mr-1" />
+        <span className="text-xs">{imagesCount}</span>
+      </div>
     );
   };
 
@@ -102,12 +102,12 @@ export const ScheduledPost = ({
         {content.length >= 1 ? (
           <p className="text-gray-300">{getContent()}</p>
         ) : (
-          <span className="text-gray-400">Empty draft</span>
+          <span className="text-gray-400">Empty post</span>
         )}
       </div>
-      <div className="flex items-center justify-between mt-2">
-        <time className="text-gray-400">{getPostAt()}</time>
-        {renderImageInfo()}
+      <div className="flex items-center justify-between">
+        <time className="text-gray-400 mt-auto">{getPostAt()}</time>
+        {renderImageCounter()}
       </div>
     </div>
   );
