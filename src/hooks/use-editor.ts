@@ -38,8 +38,10 @@ const useEditor = () => {
     key && queryClient.invalidateQueries({ queryKey: [key] });
     if (currentDraftId) {
       deleteDraft(currentDraftId);
+      setCurrentDraftId(null);
     }
     setContent("");
+    setImages([]);
   };
 
   const { mutate: updateDraft } = useMutation({
@@ -113,10 +115,6 @@ const useEditor = () => {
       };
 
       await agent?.post(postRecord);
-
-      setCurrentDraftId(null);
-      setImages([]);
-      setContent("");
     },
     onSuccess: () => {
       toast({
