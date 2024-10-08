@@ -7,7 +7,6 @@ import { useCurrentDraftContext } from "@/context/current-draft-context";
 import useDrafts from "@/hooks/use-drafts";
 import useProfile from "@/hooks/bsky/use-profile";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AttachmentActions } from "./attachment-actions";
