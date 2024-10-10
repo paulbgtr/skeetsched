@@ -8,13 +8,13 @@ export default function DashboardLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <main>
         <div className="flex h-screen">
           <Sidebar />
           <UserActions />
           <main className="flex-1 overflow-auto p-4">{children}</main>
         </div>
-      </body>
+      </main>
     </html>
   );
 }
