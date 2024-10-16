@@ -68,7 +68,10 @@ const useEditor = () => {
           title: "Skeet scheduled",
           description: formatDateForNotification(postAt),
         });
-        cleanUp("scheduled-posts");
+
+        setTimeout(() => {
+          cleanUp("scheduled-posts");
+        }, 3000);
       },
     });
 
@@ -121,7 +124,10 @@ const useEditor = () => {
         title: "Skeet posted",
         description: "Your skeet has been posted",
       });
-      cleanUp();
+
+      setTimeout(() => {
+        cleanUp();
+      }, 3000);
     },
   });
 
