@@ -64,7 +64,7 @@ export const Draft = ({ id, content }: { id: string; content: string }) => {
         </button>
         <p>
           {content.length >= 1 ? (
-            <p className="text-gray-300">{getContent()}</p>
+            <span className="text-gray-300">{getContent()}</span>
           ) : (
             <span className="text-gray-400">Empty draft</span>
           )}
