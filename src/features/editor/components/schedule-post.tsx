@@ -24,6 +24,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  DialogTitle,
+  DialogDescription,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -74,88 +76,92 @@ export const SchedulePost = ({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <h2 className="mb-3 text-xl font-bold">Schedule</h2>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="postDate"
-                render={({ field }) => (
-                  <>
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-[240px] pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  </>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="postTime"
-                render={({ field }) => (
-                  <>
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Time</FormLabel>
-                      <FormControl>
-                        <Input
-                          value={field.value}
-                          onChange={field.onChange}
-                          className="w-[8rem]"
-                          type="time"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </>
-                )}
-              />
-              <DialogClose asChild>
-                <Button
-                  type="submit"
-                  disabled={isDisabled || isPendingSchedulePost}
-                  variant="warning"
-                >
-                  {isPendingSchedulePost ? (
-                    <>
-                      <LoadingSpinner size="sm" className="mr-2" />
-                      <span>Scheduling...</span>
-                    </>
-                  ) : (
-                    "Schedule"
-                  )}
-                </Button>
-              </DialogClose>
-            </form>
-          </Form>
+          <DialogTitle className="text-xl font-bold">Schedule</DialogTitle>
+          <DialogDescription>
+            Schedule your post to be posted at a later time.
+          </DialogDescription>
         </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="postDate"
+              render={({ field }) => (
+                <>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[240px] pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                </>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="postTime"
+              render={({ field }) => (
+                <>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Time</FormLabel>
+                    <FormControl>
+                      <Input
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="w-[8rem]"
+                        type="time"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </>
+              )}
+            />
+            <DialogClose asChild>
+              <Button
+                type="submit"
+                disabled={isDisabled || isPendingSchedulePost}
+                variant="warning"
+              >
+                {isPendingSchedulePost ? (
+                  <>
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    <span>Scheduling...</span>
+                  </>
+                ) : (
+                  "Schedule"
+                )}
+              </Button>
+            </DialogClose>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
