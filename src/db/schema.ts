@@ -25,6 +25,7 @@ export const drafts = pgTable("drafts", {
 
 export const sessions = pgTable("sessions", {
   id: uuid("id").primaryKey().defaultRandom(),
+  accessJwt: text("access_jwt").notNull(),
   refreshJwt: text("refresh_jwt").notNull(),
   handle: text("handle").notNull(),
   did: text("did").notNull(),
