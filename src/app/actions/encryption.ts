@@ -1,33 +1,15 @@
-import crypto, { type CipherGCMTypes } from "crypto";
+import CryptoJS from "crypto-js";
 
-const algorithm: CipherGCMTypes = "aes-256-gcm";
-const secretKey = "secret"; // TODO: move to env
+const secretKey = "secret";
 
 export const encrypt = (token: string) => {
-  const iv = crypto.randomBytes(16);
-
-  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
-  let encrypted = cipher.update(token, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  return {
-    iv: iv.toString("hex"),
-    encryptedData: encrypted,
-    tag: cipher.getAuthTag().toString("hex"),
-  };
+  const encrypted = CryptoJS.AES.encrypt(token, secretKey).toString();
+  return encrypted;
 };
 
-export const decrypt = (encryptedData: {
-  iv: string;
-  encryptedData: string;
-  tag: string;
-}) => {
-  const iv = Buffer.from(encryptedData.iv, "hex");
-  const tag = Buffer.from(encryptedData.tag, "hex");
-  const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);
-  decipher.setAuthTag(tag);
-
-  let decrypted = decipher.update(encryptedData.encryptedData, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-
+export const decrypt = (encryptedData: string) => {
+  const decrypted = CryptoJS.AES.decrypt(encryptedData, secretKey).toString(
+    CryptoJS.enc.Utf8
+  );
   return decrypted;
 };
